@@ -54,3 +54,12 @@ Create connections for the following:
 5. ### Import repos & Create pipelines
 
 These are the repos containing the microservices that form the Sock Shop web app along with the Azure Pipeline YAMLS files.
+- https://github.com/ja-rowe/user
+- https://github.com/ja-rowe/shipping
+- https://github.com/ja-rowe/queue-master
+- https://github.com/ja-rowe/payment
+- https://github.com/ja-rowe/orders
+- https://github.com/ja-rowe/front-end
+- https://github.com/ja-rowe/catalogue
+- https://github.com/ja-rowe/carts
+- https://github.com/ja-rowe/azure-kubernetes-service-deploy
