@@ -1,0 +1,56 @@
+
+## Installation
+
+Required CLI tools:
+
+- [Azure DevOps Service](https://azure.microsoft.com/en-us/products/devops)
+- [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
+
+1. ### Create Storage Account
+
+This is where we will store the terraform state.
+
+```
+#!/bin/bash
+
+RESOURCE_GROUP_NAME="aks-terraform"
+STORAGE_ACCOUNT_NAME=tfstate$RANDOM
+CONTAINER_NAME=tfstate
+
+# Create resource group
+az group create --name $RESOURCE_GROUP_NAME --location eastus
+
+# Create storage account
+az storage account create --resource-group $RESOURCE_GROUP_NAME --name $STORAGE_ACCOUNT_NAME --sku Standard_LRS --encryption-services blob
+
+# Create blob container
+az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME
+
+az storage account keys list --resource-group $RESOURCE_GROUP_NAME --account-name $STORAGE_ACCOUNT_NAME --query '[0].value' -o tsv
+```
+2. ### Create Azure Container Registry
+
+```
+#!/bin/bash
+
+RESOURCE_GROUP_NAME="aks-terraform"
+CONTAINER_REGISTRY_NAME="sockshop1"
+
+az acr create --resource-group $RESOURCE_GROUP_NAME \
+  --name $CONTAINER_REGISTRY_NAME --sku Standard
+```
+
+3. ### Create Service Connections
+
+Create connections for the following:
+- ACR
+- Azure Storage
+
+4. ### Create the following variables in the Library
+-  dockerRegistryServiceConnection
+    - the value should be the name of the service connection
+- containerRegistry
+    - the value should be the name of the container registry
+5. ### Import repos & Create pipelines
+
+These are the repos containing the microservices that form the Sock Shop web app along with the Azure Pipeline YAMLS files.

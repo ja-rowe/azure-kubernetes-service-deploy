@@ -1,0 +1,41 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: none
+
+pool:
+  name: default
+
+variables:
+  TF_VAR_BKSTRGRG: 'aks-terraform'
+  TF_VAR_BKSTRG: 'tfstate1960'
+  TF_VAR_BKCONTAINER: 'tfstate'
+  TF_VAR_BKSTRGKEY: 'aks.terraform.tfstate'
+
+jobs:
+  - job: destroy
+    steps:
+      - script: 'sudo apt install unzip -y'
+        displayName: install unzip
+      - task: TerraformInstaller@1
+        displayName: tfinstall
+        inputs:
+          terraformVersion: 'latest'
+      - task: TerraformTaskV4@4
+        displayName: init
+        inputs:
+          provider: 'azurerm'
+          command: 'init'
+          backendServiceArm: 'tfstateServiceConnection'
+          backendAzureRmResourceGroupName: 'aks-terraform'
+          backendAzureRmStorageAccountName: 'tfstate1960'
+          backendAzureRmContainerName: 'tfstate'
+          backendAzureRmKey: 'aks.terraform.tfstate'
+      - task: TerraformTaskV4@4
+        displayName: destroy
+        inputs:
+          provider: 'azurerm'
+          command: 'destroy'
+          environmentServiceNameAzureRM: 'tfstateServiceConnection'
